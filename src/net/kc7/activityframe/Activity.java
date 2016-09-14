@@ -1,6 +1,5 @@
 package net.kc7.activityframe;
 
-import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -13,7 +12,7 @@ import javax.swing.Timer;
 
 public class Activity extends JPanel implements ActionListener {
 
-	private static final long serialVersionUID = 4737732210937740418L;
+	private static final long serialVersionUID = 2L;
 	
 	private final int ACTIVITY_WIDTH = 100;
 	private final int ACTIVITY_HEIGHT = 100;
