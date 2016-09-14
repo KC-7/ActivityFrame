@@ -12,7 +12,7 @@ import javax.swing.Timer;
 
 public class Activity extends JPanel implements ActionListener {
 
-	private static final long serialVersionUID = 2L;
+	private static final long serialVersionUID = 1L;
 	
 	private final int ACTIVITY_WIDTH = 100;
 	private final int ACTIVITY_HEIGHT = 100;
