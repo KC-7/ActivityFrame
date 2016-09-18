@@ -38,15 +38,18 @@ public class Activity extends JPanel implements ActionListener {
 		startActivity();	
 	}
 	
-	private boolean loadResources() {
+	// OVERRIDE -- Loads images, audio, and other assets
+	protected boolean loadResources() {
 		return true;
 	}
 	
-	private final void startActivity() {
+	// DEFAULT -- Kicks off the activity
+	protected boolean startActivity() {
 		active = true;
-		
 		Timer timer = new Timer(ACTIVITY_FRAMERATE, this);
 		timer.start();
+		
+		return true;
 	}
 	
 	private boolean processInfo() {
