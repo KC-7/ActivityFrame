@@ -52,6 +52,7 @@ public class Activity extends JPanel implements ActionListener {
 		return true;
 	}
 	
+	// OVERRIDE -- Handle data and execute tasks every frame
 	private boolean processInfo() {
 		return true;
 	}
@@ -70,11 +71,12 @@ public class Activity extends JPanel implements ActionListener {
 		else drawVoid(g);
 	}
 	
-	private boolean drawView(Graphics g) {
+	// OVERRIDE -- Draws the View every active frame
+	protected boolean drawView(Graphics g) {
 		return true;
 	}
 	
-	private boolean drawVoid(Graphics g) {
+	protected boolean drawVoid(Graphics g) {
 		return true;
 	}
 	
