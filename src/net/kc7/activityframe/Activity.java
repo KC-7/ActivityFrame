@@ -38,7 +38,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Loads images, audio, and other assets
 	protected abstract void loadResources();
 	
-	// Kicks off the activity
+	// Starts the timer and sets the active state
 	protected void startActivity() {
 		active = true;
 		timer = new Timer(ACTIVITY_FRAMERATE, this);
