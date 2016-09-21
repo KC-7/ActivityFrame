@@ -1,2 +1,2 @@
-# ActivityFrame
-ActivityFrame Alpha
+# ActivityPlus
+ActivityPlus and Activity
