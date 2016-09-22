@@ -1,5 +1,6 @@
 package com.github.kc_7.activityplus;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
@@ -15,65 +16,87 @@ public abstract class Activity extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
 	public static int PULSE_RATE;
+	public static int PULSE_DELAY;
 	public static int WIDTH;
 	public static int HEIGHT;
+	public static int COLOR;
 	
 	protected boolean active = false;
-	protected Timer timer;
+	protected Timer pulse;
 	
-	protected static final int UP = KeyEvent.VK_UP;
-	protected static final int DOWN = KeyEvent.VK_DOWN;
-	protected static final int LEFT = KeyEvent.VK_LEFT;
-	protected static final int RIGHT = KeyEvent.VK_RIGHT;
+	protected static final int KEY_UP = KeyEvent.VK_UP;
+	protected static final int KEY_DOWN = KeyEvent.VK_DOWN;
+	protected static final int KEY_LEFT = KeyEvent.VK_LEFT;
+	protected static final int KEY_RIGHT = KeyEvent.VK_RIGHT;
 	
 	public Activity() {	
 		
 		setFocusable(true);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
+		setBackground(new Color(COLOR));
 		addKeyListener(new KeyHandler());
 		
 		loadResources();
-		startActivity();	
+		activate();	
 	}
 	
-	// Set active and start the Timer
-	protected void startActivity() {
+	// Start, then activate state and start Timer
+	private void activate() {
+		start();
+		
 		active = true;
-		timer = new Timer(PULSE_RATE, this);
-		timer.start();
+		pulse = new Timer(PULSE_RATE, this);
+		pulse.setInitialDelay(PULSE_DELAY);
+		pulse.start();
 	}
 	
-	// Set inactive and stop the Timer
-	protected void stopActivity() {
-		active = false;
-		timer.stop();
+	// Stop, then deactivate and stop Timer
+	private void deactivate() {
+		stop();
+		
+		active = false;		// Will be investigated, replaced, and/or deprecated in the near future
+		pulse.stop();
 	}
 	
-	// Pulses the processor if active and graphics
+	// Pulse the processor if active, then graphics
 	private void pulseActivity() {
-		if (active) pulseProcessor();
-		repaint();
+		if (active) {
+			pulseProcessor();
+		} else {
+			deactivate();
+		}
+		pulseGraphics(null);
+	}
+
+	// Draw graphics
+	private void pulseGraphics(Graphics g) {
+		if (g == null) {
+			repaint();
+		} else {
+			if (active) drawActive(g);
+			else drawInactive(g);
+		}
 	}
 	
-	// Draws graphics
-	private void pulseGraphics(Graphics g) {
-		if (active) drawActive(g);
-		else drawInactive(g);
-	}
+	// Initialize data and start the activity
+	protected abstract void start();
+	
+	// OPTIONAL -- Release resources or write data
+	protected void stop() {}
 	
 	// Load images, audio, and other assets
 	protected abstract void loadResources();
 	
-	// Execute checks and tasks on pulse
+	// Execute tasks on pulse
 	protected abstract void pulseProcessor();
 	
-	// Draws graphics for an active state
+	// Draw graphics for an active state
 	protected abstract void drawActive(Graphics g);
 	
-	// Draws graphics for an inactive state
+	// Draw graphics for an inactive state
 	protected abstract void drawInactive(Graphics g);
 	
-	// Handles key values
+	// Handle key values
 	protected abstract void handleKey(int key);
 	
 	@Override
@@ -87,7 +110,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 		pulseGraphics(g);
 	}
 	
-	private final class KeyHandler extends KeyAdapter {
+	private class KeyHandler extends KeyAdapter {
 		
 		@Override
 		public void keyPressed(KeyEvent e) {
