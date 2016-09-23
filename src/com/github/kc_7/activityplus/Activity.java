@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -19,29 +21,24 @@ public abstract class Activity extends JPanel implements ActionListener {
 	public static int PULSE_DELAY;
 	public static int WIDTH;
 	public static int HEIGHT;
-	public static int COLOR;
+	public static Color COLOR;
 	
-	protected boolean active = false;
-	protected Timer pulse;
-	
-	protected static final int KEY_UP = KeyEvent.VK_UP;
-	protected static final int KEY_DOWN = KeyEvent.VK_DOWN;
-	protected static final int KEY_LEFT = KeyEvent.VK_LEFT;
-	protected static final int KEY_RIGHT = KeyEvent.VK_RIGHT;
+	protected boolean active = true;
+	private Timer pulse;
 	
 	public Activity() {	
 		
 		setFocusable(true);
 		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		setBackground(new Color(COLOR));
+		setBackground(COLOR);
 		addKeyListener(new KeyHandler());
 		
-		loadResources();
+		load();
 		activate();	
 	}
 	
 	// Start, then activate state and start Timer
-	private void activate() {
+	protected final void activate() {
 		start();
 		
 		active = true;
@@ -50,15 +47,14 @@ public abstract class Activity extends JPanel implements ActionListener {
 		pulse.start();
 	}
 	
-	// Stop, then deactivate and stop Timer
+	// Stop Timer
 	private void deactivate() {
 		stop();
 		
-		active = false;		// Will be investigated, replaced, and/or deprecated in the near future
 		pulse.stop();
 	}
 	
-	// Pulse the processor if active, then graphics
+	// Pulse the processor if active, else deactivate. Then graphics
 	private void pulseActivity() {
 		if (active) {
 			pulseProcessor();
@@ -81,11 +77,11 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Initialize data and start the activity
 	protected abstract void start();
 	
-	// OPTIONAL -- Release resources or write data
-	protected void stop() {}
+	// Release resources or write data
+	protected abstract void stop();
 	
 	// Load images, audio, and other assets
-	protected abstract void loadResources();
+	protected abstract void load();
 	
 	// Execute tasks on pulse
 	protected abstract void pulseProcessor();
@@ -96,8 +92,8 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Draw graphics for an inactive state
 	protected abstract void drawInactive(Graphics g);
 	
-	// Handle key values
-	protected abstract void handleKey(int key);
+	
+	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
 	@Override
 	public final void actionPerformed(ActionEvent e) {
@@ -112,9 +108,17 @@ public abstract class Activity extends JPanel implements ActionListener {
 	
 	private class KeyHandler extends KeyAdapter {
 		
+		Set<Integer> pressedKeys = new HashSet<>();
+		
 		@Override
-		public void keyPressed(KeyEvent e) {
-			handleKey(e.getKeyCode());
+		public synchronized void keyPressed(KeyEvent e) {
+			pressedKeys.add(e.getKeyCode());
+			handleKey(pressedKeys);
+		}
+		
+		@Override
+		public synchronized void keyReleased(KeyEvent e) {
+			pressedKeys.remove(e.getKeyCode());
 		}
 	}
 }
