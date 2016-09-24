@@ -23,8 +23,8 @@ public abstract class Activity extends JPanel implements ActionListener {
 	public static int HEIGHT;
 	public static Color COLOR;
 	
-	protected boolean active = true;
-	private Timer pulse;
+	protected boolean active = false;
+	private final Timer pulse = new Timer(PULSE_RATE, this);
 	
 	public Activity() {	
 		
@@ -42,15 +42,15 @@ public abstract class Activity extends JPanel implements ActionListener {
 		start();
 		
 		active = true;
-		pulse = new Timer(PULSE_RATE, this);
 		pulse.setInitialDelay(PULSE_DELAY);
 		pulse.start();
 	}
 	
 	// Stop Timer
-	private void deactivate() {
+	protected void deactivate() {
 		stop();
 		
+		active = false;
 		pulse.stop();
 	}
 	
@@ -58,9 +58,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	private void pulseActivity() {
 		if (active) {
 			pulseProcessor();
-		} else {
-			deactivate();
-		}
+		} 
 		pulseGraphics(null);
 	}
 
@@ -73,15 +71,14 @@ public abstract class Activity extends JPanel implements ActionListener {
 			else drawInactive(g);
 		}
 	}
+	// Load images, audio, and other assets
+	protected abstract void load();
 	
 	// Initialize data and start the activity
 	protected abstract void start();
 	
 	// Release resources or write data
 	protected abstract void stop();
-	
-	// Load images, audio, and other assets
-	protected abstract void load();
 	
 	// Execute tasks on pulse
 	protected abstract void pulseProcessor();
