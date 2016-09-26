@@ -24,7 +24,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	public static Color COLOR;
 	
 	protected boolean active = false;
-	private final Timer pulse = new Timer(PULSE_RATE, this);
+	private final Timer PULSER = new Timer(PULSE_RATE, this);
 	
 	public Activity() {	
 		
@@ -37,21 +37,21 @@ public abstract class Activity extends JPanel implements ActionListener {
 		activate();	
 	}
 	
-	// Start, then activate state and start Timer
+	// Start, then activate state and start Pulser
 	protected final void activate() {
 		start();
 		
 		active = true;
-		pulse.setInitialDelay(PULSE_DELAY);
-		pulse.start();
+		PULSER.setInitialDelay(PULSE_DELAY);
+		PULSER.start();
 	}
 	
-	// Stop Timer
+	// Stop, then deactivate state and stop Pulser
 	protected void deactivate() {
 		stop();
 		
 		active = false;
-		pulse.stop();
+		PULSER.stop();
 	}
 	
 	// Pulse the processor if active, else deactivate. Then graphics
@@ -80,7 +80,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Release resources or write data
 	protected abstract void stop();
 	
-	// Execute tasks on pulse
+	// Execute tasks on PULSER
 	protected abstract void pulseProcessor();
 	
 	// Draw graphics for an active state
