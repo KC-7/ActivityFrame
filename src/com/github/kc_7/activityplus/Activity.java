@@ -9,7 +9,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -17,33 +16,27 @@ public abstract class Activity extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	public static int PULSE_RATE;
-	public static int PULSE_DELAY;
-	public static int WIDTH;
-	public static int HEIGHT;
-	public static Color COLOR;
-	
 	protected boolean active = false;
-	private final Timer PULSER = new Timer(PULSE_RATE, this);
+	private Timer pulser; 
 	
-	public Activity() {	
+	public Activity(int width, int height, int pulse_rate, Color color) {	
 		
 		setFocusable(true);
-		setPreferredSize(new Dimension(WIDTH, HEIGHT));
-		setBackground(COLOR);
+		setPreferredSize(new Dimension(width, height));
+		setBackground(color);
 		addKeyListener(new KeyHandler());
 		
-		load();
-		activate();	
+		pulser = new Timer(pulse_rate, this);
 	}
 	
 	// Start, then activate state and start Pulser
 	protected final void activate() {
+		
+		load();
 		start();
 		
 		active = true;
-		PULSER.setInitialDelay(PULSE_DELAY);
-		PULSER.start();
+		pulser.start();
 	}
 	
 	// Stop, then deactivate state and stop Pulser
@@ -51,24 +44,30 @@ public abstract class Activity extends JPanel implements ActionListener {
 		stop();
 		
 		active = false;
-		PULSER.stop();
+		pulser.stop();
 	}
 	
 	// Pulse the processor if active, else deactivate. Then graphics
 	private void pulseActivity() {
+		
 		if (active) {
 			pulseProcessor();
 		} 
+		
 		pulseGraphics(null);
 	}
 
 	// Draw graphics
 	private void pulseGraphics(Graphics g) {
+		
 		if (g == null) {
 			repaint();
 		} else {
-			if (active) drawActive(g);
-			else drawInactive(g);
+			if (active) {
+				drawActive(g);
+			} else {
+				drawInactive(g);
+			}
 		}
 	}
 	// Load images, audio, and other assets
@@ -80,7 +79,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Release resources or write data
 	protected abstract void stop();
 	
-	// Execute tasks on PULSER
+	// Execute tasks on pulser
 	protected abstract void pulseProcessor();
 	
 	// Draw graphics for an active state
@@ -89,7 +88,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	// Draw graphics for an inactive state
 	protected abstract void drawInactive(Graphics g);
 	
-	
+	// Handles press and release of keys
 	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
 	@Override
@@ -100,6 +99,7 @@ public abstract class Activity extends JPanel implements ActionListener {
 	@Override
 	protected final void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
 		pulseGraphics(g);
 	}
 	
