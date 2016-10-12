@@ -9,7 +9,6 @@ public class ActivityPlus extends JFrame {
 	protected static Activity activity;
 
 	public ActivityPlus(Launcher launcher, String title) {
-		
 		getContentPane().add(launcher);		
 		setResizable(false);	
 		pack();
@@ -21,7 +20,6 @@ public class ActivityPlus extends JFrame {
 	}
 	
 	protected void launchActivity() {
-		
 		getContentPane().removeAll();
 		getContentPane().add(activity);
 		revalidate();

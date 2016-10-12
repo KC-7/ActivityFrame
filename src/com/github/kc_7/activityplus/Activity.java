@@ -20,7 +20,6 @@ public abstract class Activity extends JPanel implements ActionListener {
 	private Timer pulser; 
 	
 	public Activity(int width, int height, int pulse_rate, Color color) {	
-		
 		setFocusable(true);
 		setPreferredSize(new Dimension(width, height));
 		setBackground(color);
@@ -31,7 +30,6 @@ public abstract class Activity extends JPanel implements ActionListener {
 	
 	// Start, then activate state and start Pulser
 	protected final void activate() {
-		
 		load();
 		start();
 		
@@ -49,17 +47,14 @@ public abstract class Activity extends JPanel implements ActionListener {
 	
 	// Pulse the processor if active, else deactivate. Then graphics
 	private void pulseActivity() {
-		
 		if (active) {
 			pulseProcessor();
 		} 
-		
 		pulseGraphics(null);
 	}
 
 	// Draw graphics
 	private void pulseGraphics(Graphics g) {
-		
 		if (g == null) {
 			repaint();
 		} else {
@@ -103,9 +98,8 @@ public abstract class Activity extends JPanel implements ActionListener {
 		pulseGraphics(g);
 	}
 	
-	private class KeyHandler extends KeyAdapter {
-		
-		Set<Integer> pressedKeys = new HashSet<>();
+	private class KeyHandler extends KeyAdapter {	
+		final Set<Integer> pressedKeys = new HashSet<>();
 		
 		@Override
 		public synchronized void keyPressed(KeyEvent e) {

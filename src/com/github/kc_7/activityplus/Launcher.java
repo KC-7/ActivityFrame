@@ -14,19 +14,14 @@ public abstract class Launcher extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
-	private KeyHandler keyHandler = new KeyHandler();
-	
 	public Launcher(int width, int height, Color color) {
-		
 		setFocusable(true);
 		setPreferredSize(new Dimension(width, height));
 		setBackground(color);
-		addKeyListener(keyHandler);
-	
+		addKeyListener(new KeyHandler());
 	}
 	
 	protected abstract void drawLauncher(Graphics g);
-	
 	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
 	protected final void launch() {
@@ -42,8 +37,7 @@ public abstract class Launcher extends JPanel {
 	}
 	
 	private class KeyHandler extends KeyAdapter {
-		
-		Set<Integer> pressedKeys = new HashSet<>();
+		final Set<Integer> pressedKeys = new HashSet<>();
 		
 		@Override
 		public synchronized void keyPressed(KeyEvent e) {
