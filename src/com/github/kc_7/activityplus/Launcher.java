@@ -14,40 +14,66 @@ public abstract class Launcher extends JPanel {
 
 	private static final long serialVersionUID = 1L;
 	
+	private boolean launched = false;
+	
 	public Launcher(int width, int height, Color color) {
+		
 		setFocusable(true);
 		setPreferredSize(new Dimension(width, height));
 		setBackground(color);
 		addKeyListener(new KeyHandler());
+		
+	}
+	
+	protected final void launch() {
+		
+		final ActivityPlus plus = (ActivityPlus) SwingUtilities.getWindowAncestor(this);
+		plus.launchActivity();
+		
+		launched = true;
+		
 	}
 	
 	protected abstract void drawLauncher(Graphics g);
-	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
-	protected final void launch() {
-		final ActivityPlus plus = (ActivityPlus)SwingUtilities.getWindowAncestor(this);
-		plus.launchActivity();
-	}
+	protected abstract void drawEnded(Graphics g);
+	
+	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
 	@Override
 	protected final void paintComponent(Graphics g) {
+		
 		super.paintComponent(g);
 		
-		drawLauncher(g);
+		if (launched) {
+			
+			drawEnded(g);
+			
+		} else {
+			
+			drawLauncher(g);
+			
+		}
+		
 	}
 	
 	private class KeyHandler extends KeyAdapter {
+		
 		final Set<Integer> pressedKeys = new HashSet<>();
 		
 		@Override
 		public synchronized void keyPressed(KeyEvent e) {
+			
 			pressedKeys.add(e.getKeyCode());
 			handleKey(pressedKeys);
+			
 		}
 		
 		@Override
 		public synchronized void keyReleased(KeyEvent e) {
+			
 			pressedKeys.remove(e.getKeyCode());
+			
 		}
 	}
 	

@@ -10,106 +10,94 @@ import java.awt.event.KeyEvent;
 import java.util.HashSet;
 import java.util.Set;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 public abstract class Activity extends JPanel implements ActionListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	protected boolean active = false;
-	private Timer pulser; 
+	private Timer timer; 
 	
-	public Activity(int width, int height, int pulse_rate, Color color) {	
+	public Activity(int width, int height, int rate, Color color) {
+		
 		setFocusable(true);
 		setPreferredSize(new Dimension(width, height));
 		setBackground(color);
 		addKeyListener(new KeyHandler());
 		
-		pulser = new Timer(pulse_rate, this);
+		timer = new Timer(rate, this);
 	}
 	
-	// Start, then activate state and start Pulser
+	// Activates the activity
 	protected final void activate() {
+		
 		load();
 		start();
 		
-		active = true;
-		pulser.start();
+		timer.start();
+		
 	}
 	
-	// Stop, then deactivate state and stop Pulser
+	// Deactivates the activity
 	protected void deactivate() {
+		
 		stop();
 		
-		active = false;
-		pulser.stop();
+		timer.stop();
+		
+		final ActivityPlus plus = (ActivityPlus) SwingUtilities.getWindowAncestor(this);
+		plus.endActivity();
+		
 	}
 	
-	// Pulse the processor if active, else deactivate. Then graphics
-	private void pulseActivity() {
-		if (active) {
-			pulseProcessor();
-		} 
-		pulseGraphics(null);
-	}
-
-	// Draw graphics
-	private void pulseGraphics(Graphics g) {
-		if (g == null) {
-			repaint();
-		} else {
-			if (active) {
-				drawActive(g);
-			} else {
-				drawInactive(g);
-			}
-		}
-	}
-	// Load images, audio, and other assets
 	protected abstract void load();
 	
-	// Initialize data and start the activity
 	protected abstract void start();
 	
-	// Release resources or write data
 	protected abstract void stop();
 	
-	// Execute tasks on pulser
-	protected abstract void pulseProcessor();
+	protected abstract void process();
 	
-	// Draw graphics for an active state
-	protected abstract void drawActive(Graphics g);
+	protected abstract void draw(Graphics g);
 	
-	// Draw graphics for an inactive state
-	protected abstract void drawInactive(Graphics g);
-	
-	// Handles press and release of keys
 	protected abstract void handleKey(Set<Integer> pressedKeys);
 	
 	@Override
 	public final void actionPerformed(ActionEvent e) {
-		pulseActivity();
+		
+		process();
+		repaint();
+		
 	}
 	
 	@Override
 	protected final void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		
-		pulseGraphics(g);
+		super.paintComponent(g);
+		draw(g);
+		
 	}
 	
-	private class KeyHandler extends KeyAdapter {	
+	private class KeyHandler extends KeyAdapter {
+		
 		final Set<Integer> pressedKeys = new HashSet<>();
 		
 		@Override
 		public synchronized void keyPressed(KeyEvent e) {
+			
 			pressedKeys.add(e.getKeyCode());
 			handleKey(pressedKeys);
+			
 		}
 		
 		@Override
 		public synchronized void keyReleased(KeyEvent e) {
+			
 			pressedKeys.remove(e.getKeyCode());
+			
 		}
+		
 	}
+	
 }
