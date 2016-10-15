@@ -5,26 +5,28 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.util.HashSet;
 import java.util.Set;
+
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-public abstract class Activity extends JPanel implements ActionListener {
+public abstract class Activity extends JPanel implements ActionListener, KeyListener {
 
 	private static final long serialVersionUID = 1L;
 	
-	private Timer timer; 
+	protected Timer timer; 
+	private final Set<Integer> pressedKeys = new HashSet<>();
 	
 	public Activity(int width, int height, int rate, Color color) {
 		
 		setFocusable(true);
 		setPreferredSize(new Dimension(width, height));
 		setBackground(color);
-		addKeyListener(new KeyHandler());
+		addKeyListener(this);
 		
 		timer = new Timer(rate, this);
 	}
@@ -39,8 +41,20 @@ public abstract class Activity extends JPanel implements ActionListener {
 		
 	}
 	
+	protected final void suspend() {
+		
+		timer.stop();
+		
+	}
+	
+	protected final void resume() {
+		
+		timer.start();
+		
+	}
+	
 	// Deactivates the activity
-	protected void deactivate() {
+	protected final void deactivate() {
 		
 		stop();
 		
@@ -79,24 +93,21 @@ public abstract class Activity extends JPanel implements ActionListener {
 		
 	}
 	
-	private class KeyHandler extends KeyAdapter {
+	@Override
+	public synchronized void keyTyped(KeyEvent e) {}
+	
+	@Override
+	public synchronized void keyPressed(KeyEvent e) {
 		
-		final Set<Integer> pressedKeys = new HashSet<>();
+		pressedKeys.add(e.getKeyCode());
+		handleKey(pressedKeys);
 		
-		@Override
-		public synchronized void keyPressed(KeyEvent e) {
-			
-			pressedKeys.add(e.getKeyCode());
-			handleKey(pressedKeys);
-			
-		}
+	}
+	
+	@Override
+	public synchronized void keyReleased(KeyEvent e) {
 		
-		@Override
-		public synchronized void keyReleased(KeyEvent e) {
-			
-			pressedKeys.remove(e.getKeyCode());
-			
-		}
+		pressedKeys.remove(e.getKeyCode());
 		
 	}
 	
