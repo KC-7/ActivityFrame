@@ -6,10 +6,13 @@ public class ActivityPlus extends JFrame {
 	
 	private static final long serialVersionUID = 1L;
 	
-	protected static Activity activity;
-	protected static Launcher launcher;
+	private Activity activity;
+	private Launcher launcher;
 
-	public ActivityPlus(String title) {
+	public ActivityPlus(Activity activity, Launcher launcher, String title) {
+		
+		this.activity = activity;
+		this.launcher = launcher;
 		
 		getContentPane().add(launcher);		
 		setResizable(false);
