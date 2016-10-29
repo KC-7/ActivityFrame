@@ -20,7 +20,6 @@ public class ActivityPlus extends JFrame {
 		
 		setLocationRelativeTo(null);
 		setTitle(title);
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);	
 		
 	}

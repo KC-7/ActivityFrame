@@ -24,9 +24,9 @@ public abstract class Activity extends JPanel implements ActionListener, KeyList
 
 	private static final long serialVersionUID = 1L;
 	
-	protected Timer timer; 
+	private Timer timer; 
 	private int rate;
-	private final Set<Integer> keys = new HashSet<>();
+	protected final Set<Integer> keys = new HashSet<>();
 	
 	public Activity(int width, int height, int rate, Color color) {
 		
@@ -68,6 +68,12 @@ public abstract class Activity extends JPanel implements ActionListener, KeyList
 		
 		final ActivityPlus plus = (ActivityPlus) SwingUtilities.getWindowAncestor(this);
 		plus.endActivity();
+		
+	}
+	
+	protected final boolean isActive() {
+		
+		return timer.isRunning();
 		
 	}
 	
@@ -164,6 +170,7 @@ public abstract class Activity extends JPanel implements ActionListener, KeyList
 		repaint();
 		
 	}
+
 	
 	@Override
 	protected final void paintComponent(Graphics g) {
