@@ -1,4 +1,4 @@
-package com.github.kc_7.activityplus;
+package prealpha;
 
 import javax.swing.JFrame;
 
@@ -25,6 +25,7 @@ public class ActivityPlus extends JFrame {
 		
 	}
 	
+	// Swithces from Launcher to Activity and activates it
 	protected void launchActivity() {
 		
 		getContentPane().removeAll();
@@ -36,6 +37,7 @@ public class ActivityPlus extends JFrame {
 		
 	}
 	
+	// Switches from Activity to Launcher
 	protected void endActivity() {
 		
 		getContentPane().removeAll();
